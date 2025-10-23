@@ -1,13 +1,15 @@
-# 📊 Financial Data Analysis & Risk Assessment System
+# Financial Data Analysis & Risk Assessment System
 
 A comprehensive, real-time financial dashboard built with **Next.js 14**, **TypeScript**, and **Supabase** for portfolio management, risk analysis, and market data visualization.
+
+**Live Dashboard:** [https://financial-data-analysis-gray.vercel.app](https://financial-data-analysis-gray.vercel.app)
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-14.0-black.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-## 🌟 Features
+## Features
 
 ### Portfolio Management
 - **Real-time Portfolio Tracking** - Monitor portfolio value, cost basis, and daily P&L
@@ -31,15 +33,15 @@ A comprehensive, real-time financial dashboard built with **Next.js 14**, **Type
 - **Loading States** - Smooth loading animations
 - **Responsive Design** - Mobile-friendly interface
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: Next.js 14, React 18, TypeScript
 - **Styling**: Tailwind CSS
 - **Database**: Supabase (PostgreSQL)
-- **Deployment**: Vercel-ready
+- **Deployment**: Vercel
 - **API**: Next.js API Routes
 
-## 📋 Prerequisites
+## Prerequisites
 
 Before you begin, ensure you have:
 
@@ -48,12 +50,12 @@ Before you begin, ensure you have:
 - Supabase account (free tier works)
 - Git for version control
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/joelmichaelx/financial-data-analysis.git
 cd "Financial Data Analysis & Risk Assessment System"
 ```
 
@@ -101,7 +103,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Financial Data Analysis & Risk Assessment System/
@@ -131,7 +133,7 @@ Financial Data Analysis & Risk Assessment System/
 └── README.md                         # This file
 ```
 
-## 🗄️ Database Schema
+## Database Schema
 
 ### Portfolio Table
 ```sql
@@ -170,7 +172,7 @@ Financial Data Analysis & Risk Assessment System/
 - created_at (TIMESTAMP)
 ```
 
-## 🎯 Key Features Explained
+## Key Features Explained
 
 ### Portfolio Dashboard
 The main dashboard (`src/app/page.tsx`) displays:
@@ -194,7 +196,7 @@ Comprehensive risk analysis including:
 - **Sharpe Ratio** - Risk-adjusted return measure
 - **Max Drawdown** - Largest peak-to-trough decline
 
-## 🔧 Configuration
+## Configuration
 
 ### Supabase Configuration
 Edit `src/lib/supabase.ts` to customize your Supabase client:
@@ -211,14 +213,14 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 ### Fallback Data
 The application includes fallback data for when Supabase is not configured, making it easy to test the UI without a database connection.
 
-## 📊 Sample Data
+## Sample Data
 
 The `clean-schema.sql` file includes sample data for:
 - 1 Demo Portfolio
 - 10 Stock Holdings (AAPL, GOOGL, MSFT, TSLA, AMZN, NVDA, META, NFLX, JPM, JNJ)
 - Risk metrics and analysis
 
-## 🚀 Deployment
+## Deployment
 
 ### Deploy to Vercel
 
@@ -236,7 +238,7 @@ npm run build
 npm start
 ```
 
-## 🔍 API Endpoints
+## API Endpoints
 
 ### GET `/api/portfolio`
 Fetches complete portfolio data including:
@@ -263,14 +265,14 @@ Response format:
 ### GET `/api/test-connection`
 Tests Supabase database connection and returns status.
 
-## 🛡️ Security Features
+## Security Features
 
 - **Environment Variables** - Sensitive credentials stored securely
 - **API Key Protection** - Supabase anon key used for client-side access
 - **Row Level Security** - Configure RLS in Supabase for data protection
 - **Fallback Mechanism** - Graceful degradation when database is unavailable
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Database Connection Issues
 1. Verify environment variables in `.env.local`
@@ -291,7 +293,7 @@ rm -rf .next
 npm run build
 ```
 
-## 📝 Development
+## Development
 
 ### Adding New Holdings
 Use the provided SQL scripts to add holdings:
@@ -304,7 +306,7 @@ VALUES (1, 'SYMBOL', 'Company Name', shares, price, total, change);
 ### Modifying Risk Calculations
 Edit the risk metrics in your database or extend the API logic in `src/app/api/portfolio/route.ts`.
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please follow these steps:
 1. Fork the repository
@@ -313,26 +315,25 @@ Contributions are welcome! Please follow these steps:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License.
 
-## 👨‍💻 Author
+## Author
 
 Joel Omoroje
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Next.js team for the amazing framework
 - Supabase for the backend infrastructure
 - Tailwind CSS for the styling system
 - Vercel for hosting capabilities
 
-## 📞 Support
+## Support
 
 For support, please open an issue in the GitHub repository or contact the maintainer.
 
 ---
 
-**Built with ❤️ using Next.js and Supabase**
-
+**Built with Next.js and Supabase**
