@@ -97,3 +97,4 @@ Thumbs.db
 
 # Prisma
 prisma/migrations/
+.vercel
