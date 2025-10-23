@@ -36,7 +36,7 @@ export default function Dashboard() {
     },
     {
       title: 'Risk Score',
-      value: riskMetrics?.overallRisk || '0',
+      value: riskMetrics?.overallRisk ? riskMetrics.overallRisk.toString() : '0',
       change: '-2.3%',
       changeType: 'negative' as const,
       icon: ShieldCheckIcon,
@@ -50,7 +50,7 @@ export default function Dashboard() {
     },
     {
       title: 'Active Alerts',
-      value: riskMetrics?.activeAlerts || '0',
+      value: riskMetrics?.activeAlerts ? riskMetrics.activeAlerts.toString() : '0',
       change: '+3',
       changeType: 'neutral' as const,
       icon: ExclamationTriangleIcon,

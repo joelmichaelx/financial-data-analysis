@@ -45,7 +45,7 @@ export default function RiskAnalysisPage() {
     },
     {
       title: 'Max Drawdown',
-      value: `${(riskMetrics?.maxDrawdown * 100)?.toFixed(1) || '0'}%`,
+      value: `${(riskMetrics?.maxDrawdown ? riskMetrics.maxDrawdown * 100 : 0).toFixed(1)}%`,
       change: '-0.5%',
       changeType: 'negative' as const,
       icon: ClockIcon,
