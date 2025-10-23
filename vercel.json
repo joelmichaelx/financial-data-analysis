@@ -1,4 +1,5 @@
 {
+  "name": "financial-data-analysis",
   "framework": "nextjs",
   "buildCommand": "npm run build",
   "devCommand": "npm run dev",
@@ -10,10 +11,5 @@
   },
   "env": {
     "NODE_ENV": "production"
-  },
-  "build": {
-    "env": {
-      "NEXT_PUBLIC_API_URL": "@next_public_api_url"
-    }
   }
 }
