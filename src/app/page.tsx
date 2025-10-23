@@ -1,256 +1,164 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { 
-  ChartBarIcon, 
-  ShieldCheckIcon, 
-  ArrowTrendingUpIcon, 
-  ExclamationTriangleIcon,
-  CurrencyDollarIcon,
-  ClockIcon,
-  ArrowUpIcon,
-  ArrowDownIcon
-} from '@heroicons/react/24/outline';
-import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { MetricCard } from '@/components/dashboard/MetricCard';
-import { RiskAssessmentChart } from '@/components/charts/RiskAssessmentChart';
-import { PortfolioPerformanceChart } from '@/components/charts/PortfolioPerformanceChart';
-import { RealTimeDataFeed } from '@/components/data/RealTimeDataFeed';
-import { RiskAlerts } from '@/components/alerts/RiskAlerts';
-
 export default function Dashboard() {
-  const [financialData, setFinancialData] = useState(null);
-  const [riskMetrics, setRiskMetrics] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [selectedTimeframe, setSelectedTimeframe] = useState('1D');
-
-  useEffect(() => {
-    // Load data on client side to avoid build-time issues
-    const loadData = async () => {
-      try {
-        const [financialResponse, riskResponse] = await Promise.all([
-          fetch('/api/financial-data'),
-          fetch('/api/risk-assessment')
-        ]);
-        
-        if (financialResponse.ok) {
-          const financial = await financialResponse.json();
-          setFinancialData(financial);
-        }
-        
-        if (riskResponse.ok) {
-          const risk = await riskResponse.json();
-          setRiskMetrics(risk);
-        }
-      } catch (error) {
-        console.error('Error loading data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
-
-  // Fallback data for when API calls fail
-  const fallbackData = {
-    portfolioValue: 1250000,
-    dailyPnL: 2450,
-    totalReturn: 12.5,
-    performanceData: [
-      { date: '2024-01-01', value: 1000000, benchmark: 1000000 },
-      { date: '2024-01-02', value: 1012000, benchmark: 1005000 },
-      { date: '2024-01-03', value: 1028000, benchmark: 1012000 },
-      { date: '2024-01-04', value: 1015000, benchmark: 1008000 },
-      { date: '2024-01-05', value: 1032000, benchmark: 1015000 },
-    ],
-    holdings: [
-      { symbol: 'AAPL', name: 'Apple Inc.', shares: 100, value: 15000, weight: 0.12, change: 150, changePercent: 1.01 },
-      { symbol: 'GOOGL', name: 'Alphabet Inc.', shares: 50, value: 140000, weight: 0.11, change: -200, changePercent: -0.14 },
-      { symbol: 'MSFT', name: 'Microsoft Corporation', shares: 200, value: 70000, weight: 0.056, change: 500, changePercent: 0.72 },
-    ]
-  };
-
-  const fallbackRisk = {
-    overallRisk: 65.5,
-    riskScore: 65.5,
-    riskLevel: 'High',
-    var95: 25000,
-    var99: 35000,
-    expectedShortfall: 42000,
-    maxDrawdown: 0.15,
-    sharpeRatio: 1.2,
-    beta: 0.8,
-    correlation: 0.6,
-    activeAlerts: 3,
-    riskBreakdown: [
-      { category: 'Market Risk', value: 35, color: '#ef4444' },
-      { category: 'Credit Risk', value: 25, color: '#f59e0b' },
-      { category: 'Liquidity Risk', value: 20, color: '#3b82f6' },
-      { category: 'Operational Risk', value: 15, color: '#10b981' },
-      { category: 'Other', value: 5, color: '#8b5cf6' },
-    ],
-    alerts: [
-      { id: '1', type: 'warning', title: 'High Volatility Detected', message: 'AAPL stock showing unusual price movements', severity: 'high' },
-      { id: '2', type: 'error', title: 'Risk Threshold Exceeded', message: 'Portfolio risk score has exceeded acceptable limits', severity: 'critical' },
-      { id: '3', type: 'info', title: 'Market Update', message: 'Market opening with increased trading volume', severity: 'low' },
-    ]
-  };
-
-  const data = financialData || fallbackData;
-  const risk = riskMetrics || fallbackRisk;
-
-  const metrics = [
-    {
-      title: 'Total Portfolio Value',
-      value: data?.portfolioValue ? `$${data.portfolioValue.toLocaleString()}` : '$1,250,000',
-      change: '+12.5%',
-      changeType: 'positive' as const,
-      icon: CurrencyDollarIcon,
-    },
-    {
-      title: 'Risk Score',
-      value: risk?.overallRisk ? risk.overallRisk.toString() : '65.5',
-      change: '-2.3%',
-      changeType: 'negative' as const,
-      icon: ShieldCheckIcon,
-    },
-    {
-      title: 'Daily P&L',
-      value: data?.dailyPnL ? `$${data.dailyPnL.toLocaleString()}` : '$2,450',
-      change: '+$2,450',
-      changeType: 'positive' as const,
-      icon: ArrowTrendingUpIcon,
-    },
-    {
-      title: 'Active Alerts',
-      value: risk?.activeAlerts ? risk.activeAlerts.toString() : '3',
-      change: '+3',
-      changeType: 'neutral' as const,
-      icon: ExclamationTriangleIcon,
-    },
-  ];
-
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Financial Dashboard</h1>
-            <p className="text-gray-600 mt-1">
-              Real-time financial data analysis and risk assessment
-            </p>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Financial Dashboard</h1>
+          <p className="mt-2 text-gray-600">Real-time portfolio analysis and risk assessment</p>
+        </div>
+
+        {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white p-6 rounded-lg shadow">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-green-100 rounded-md flex items-center justify-center">
+                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                </div>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Portfolio Value</p>
+                <p className="text-2xl font-semibold text-gray-900">$1.25M</p>
+                <p className="text-sm text-green-600">+12.5%</p>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <ClockIcon className="h-5 w-5 text-gray-400" />
-              <span className="text-sm text-gray-600">
-                Last updated: {new Date().toLocaleTimeString()}
-              </span>
+
+          <div className="bg-white p-6 rounded-lg shadow">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-red-100 rounded-md flex items-center justify-center">
+                  <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                </div>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Risk Score</p>
+                <p className="text-2xl font-semibold text-gray-900">65.5</p>
+                <p className="text-sm text-red-600">High Risk</p>
+              </div>
             </div>
-            <select
-              value={selectedTimeframe}
-              onChange={(e) => setSelectedTimeframe(e.target.value)}
-              className="input-field w-auto"
-            >
-              <option value="1D">1 Day</option>
-              <option value="1W">1 Week</option>
-              <option value="1M">1 Month</option>
-              <option value="3M">3 Months</option>
-              <option value="1Y">1 Year</option>
-            </select>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-green-100 rounded-md flex items-center justify-center">
+                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                </div>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Daily P&L</p>
+                <p className="text-2xl font-semibold text-gray-900">$2,450</p>
+                <p className="text-sm text-green-600">+0.2%</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-yellow-100 rounded-md flex items-center justify-center">
+                  <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                </div>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Active Alerts</p>
+                <p className="text-2xl font-semibold text-gray-900">3</p>
+                <p className="text-sm text-yellow-600">Risk Notifications</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Metrics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {metrics.map((metric, index) => (
-            <motion.div
-              key={metric.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <MetricCard {...metric} />
-            </motion.div>
-          ))}
+        {/* Portfolio Performance */}
+        <div className="bg-white p-6 rounded-lg shadow mb-8">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Portfolio Performance</h3>
+          <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+            <p className="text-gray-500">Performance chart will be displayed here</p>
+          </div>
         </div>
 
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <div className="card">
-              <div className="card-header">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Portfolio Performance
-                </h3>
-              </div>
-              <PortfolioPerformanceChart 
-                data={data?.performanceData} 
-                timeframe={selectedTimeframe}
-              />
+        {/* Risk Assessment */}
+        <div className="bg-white p-6 rounded-lg shadow mb-8">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Risk Assessment</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="text-center p-4 bg-red-50 rounded-lg">
+              <p className="text-2xl font-bold text-red-600">35%</p>
+              <p className="text-sm text-gray-600">Market Risk</p>
             </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <div className="card">
-              <div className="card-header">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Risk Assessment
-                </h3>
-              </div>
-              <RiskAssessmentChart 
-                data={risk?.riskBreakdown} 
-                timeframe={selectedTimeframe}
-              />
+            <div className="text-center p-4 bg-yellow-50 rounded-lg">
+              <p className="text-2xl font-bold text-yellow-600">25%</p>
+              <p className="text-sm text-gray-600">Credit Risk</p>
             </div>
-          </motion.div>
+            <div className="text-center p-4 bg-blue-50 rounded-lg">
+              <p className="text-2xl font-bold text-blue-600">20%</p>
+              <p className="text-sm text-gray-600">Liquidity Risk</p>
+            </div>
+            <div className="text-center p-4 bg-green-50 rounded-lg">
+              <p className="text-2xl font-bold text-green-600">15%</p>
+              <p className="text-sm text-gray-600">Operational Risk</p>
+            </div>
+          </div>
         </div>
 
-        {/* Real-time Data and Alerts */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="lg:col-span-2"
-          >
-            <div className="card">
-              <div className="card-header">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Real-time Market Data
-                </h3>
+        {/* Holdings */}
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Top Holdings</h3>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center py-2 border-b">
+              <div>
+                <span className="font-medium">AAPL</span>
+                <span className="text-gray-500 ml-2">Apple Inc.</span>
               </div>
-              <RealTimeDataFeed />
+              <div className="text-right">
+                <div className="font-medium">$15,000</div>
+                <div className="text-green-600 text-sm">+1.01%</div>
+              </div>
             </div>
-          </motion.div>
+            
+            <div className="flex justify-between items-center py-2 border-b">
+              <div>
+                <span className="font-medium">GOOGL</span>
+                <span className="text-gray-500 ml-2">Alphabet Inc.</span>
+              </div>
+              <div className="text-right">
+                <div className="font-medium">$140,000</div>
+                <div className="text-red-600 text-sm">-0.14%</div>
+              </div>
+            </div>
+            
+            <div className="flex justify-between items-center py-2">
+              <div>
+                <span className="font-medium">MSFT</span>
+                <span className="text-gray-500 ml-2">Microsoft Corporation</span>
+              </div>
+              <div className="text-right">
+                <div className="font-medium">$70,000</div>
+                <div className="text-green-600 text-sm">+0.72%</div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-          >
-            <div className="card">
-              <div className="card-header">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Risk Alerts
-                </h3>
-              </div>
-              <RiskAlerts alerts={risk?.alerts} />
-            </div>
-          </motion.div>
+        {/* System Status */}
+        <div className="mt-8 text-center">
+          <p className="text-gray-600">
+            System Status: <span className="text-green-600 font-medium">Operational</span>
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            Last updated: {new Date().toLocaleString()}
+          </p>
         </div>
       </div>
-    </DashboardLayout>
+    </div>
   );
 }
