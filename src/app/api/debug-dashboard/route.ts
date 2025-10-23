@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+function getPrismaClient() {
+  return new PrismaClient();
+}
 
 export async function GET(request: NextRequest) {
   const debugInfo = {
@@ -22,6 +24,7 @@ export async function GET(request: NextRequest) {
     }
   };
 
+  const prisma = getPrismaClient();
   try {
     // Step 1: Check database connection
     console.log('🔍 Step 1: Checking database connection...');

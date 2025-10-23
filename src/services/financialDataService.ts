@@ -2,7 +2,11 @@ import axios from 'axios';
 import { PrismaClient } from '@prisma/client';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
-const prisma = new PrismaClient();
+
+// Create Prisma client instance per request to avoid connection issues
+function getPrismaClient() {
+  return new PrismaClient();
+}
 
 export interface FinancialData {
   portfolioValue: number;
@@ -74,6 +78,7 @@ class FinancialDataService {
   }
 
   async getFinancialData(): Promise<FinancialData> {
+    const prisma = getPrismaClient();
     try {
       // Try to fetch from database first
       const portfolio = await prisma.portfolio.findFirst({
@@ -113,6 +118,7 @@ class FinancialDataService {
         };
       }
 
+      await prisma.$disconnect();
       // Fallback to mock data if no database data
       return {
         portfolioValue: 1250000,
@@ -151,6 +157,7 @@ class FinancialDataService {
       };
     } catch (error) {
       console.error('Error fetching financial data:', error);
+      await prisma.$disconnect();
       // Return mock data as fallback
       return {
         portfolioValue: 1250000,
