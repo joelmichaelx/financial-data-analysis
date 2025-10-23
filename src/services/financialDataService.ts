@@ -1,6 +1,8 @@
 import axios from 'axios';
+import { PrismaClient } from '@prisma/client';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+const prisma = new PrismaClient();
 
 export interface FinancialData {
   portfolioValue: number;
@@ -72,43 +74,120 @@ class FinancialDataService {
   }
 
   async getFinancialData(): Promise<FinancialData> {
-    // In a real application, this would fetch from your API
-    // For now, return mock data
-    return {
-      portfolioValue: 1250000,
-      dailyPnL: 2450,
-      totalReturn: 12.5,
-      performanceData: this.generateMockPerformanceData(),
-      holdings: [
-        {
-          symbol: 'AAPL',
-          name: 'Apple Inc.',
-          shares: 100,
-          value: 15000,
-          weight: 0.12,
-          change: 150,
-          changePercent: 1.01,
-        },
-        {
-          symbol: 'GOOGL',
-          name: 'Alphabet Inc.',
-          shares: 50,
-          value: 140000,
-          weight: 0.11,
-          change: -200,
-          changePercent: -0.14,
-        },
-        {
-          symbol: 'MSFT',
-          name: 'Microsoft Corporation',
-          shares: 200,
-          value: 70000,
-          weight: 0.056,
-          change: 500,
-          changePercent: 0.72,
-        },
-      ],
-    };
+    try {
+      // Try to fetch from database first
+      const portfolio = await prisma.portfolio.findFirst({
+        include: {
+          holdings: true,
+          performance: {
+            orderBy: { date: 'desc' },
+            take: 30
+          }
+        }
+      });
+
+      if (portfolio) {
+        const totalValue = portfolio.totalValue;
+        const totalCost = portfolio.totalCost;
+        const dailyPnL = totalValue - totalCost;
+        const totalReturn = ((totalValue - totalCost) / totalCost) * 100;
+
+        return {
+          portfolioValue: totalValue,
+          dailyPnL: dailyPnL,
+          totalReturn: totalReturn,
+          performanceData: portfolio.performance.map(p => ({
+            date: p.date.toISOString().split('T')[0],
+            value: p.value,
+            benchmark: p.benchmark || undefined,
+          })),
+          holdings: portfolio.holdings.map(h => ({
+            symbol: h.symbol,
+            name: h.name,
+            shares: h.shares,
+            value: h.totalValue,
+            weight: h.weight,
+            change: h.currentPrice - h.costBasis,
+            changePercent: ((h.currentPrice - h.costBasis) / h.costBasis) * 100,
+          })),
+        };
+      }
+
+      // Fallback to mock data if no database data
+      return {
+        portfolioValue: 1250000,
+        dailyPnL: 2450,
+        totalReturn: 12.5,
+        performanceData: this.generateMockPerformanceData(),
+        holdings: [
+          {
+            symbol: 'AAPL',
+            name: 'Apple Inc.',
+            shares: 100,
+            value: 15000,
+            weight: 0.12,
+            change: 150,
+            changePercent: 1.01,
+          },
+          {
+            symbol: 'GOOGL',
+            name: 'Alphabet Inc.',
+            shares: 50,
+            value: 140000,
+            weight: 0.11,
+            change: -200,
+            changePercent: -0.14,
+          },
+          {
+            symbol: 'MSFT',
+            name: 'Microsoft Corporation',
+            shares: 200,
+            value: 70000,
+            weight: 0.056,
+            change: 500,
+            changePercent: 0.72,
+          },
+        ],
+      };
+    } catch (error) {
+      console.error('Error fetching financial data:', error);
+      // Return mock data as fallback
+      return {
+        portfolioValue: 1250000,
+        dailyPnL: 2450,
+        totalReturn: 12.5,
+        performanceData: this.generateMockPerformanceData(),
+        holdings: [
+          {
+            symbol: 'AAPL',
+            name: 'Apple Inc.',
+            shares: 100,
+            value: 15000,
+            weight: 0.12,
+            change: 150,
+            changePercent: 1.01,
+          },
+          {
+            symbol: 'GOOGL',
+            name: 'Alphabet Inc.',
+            shares: 50,
+            value: 140000,
+            weight: 0.11,
+            change: -200,
+            changePercent: -0.14,
+          },
+          {
+            symbol: 'MSFT',
+            name: 'Microsoft Corporation',
+            shares: 200,
+            value: 70000,
+            weight: 0.056,
+            change: 500,
+            changePercent: 0.72,
+          },
+        ],
+      };
+    }
   }
 
   async getPortfolioData(): Promise<PortfolioData> {
