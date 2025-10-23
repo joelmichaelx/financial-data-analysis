@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   CurrencyDollarIcon, 
-  TrendingUpIcon,
-  TrendingDownIcon,
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon,
   ChartBarIcon,
   ArrowUpIcon,
   ArrowDownIcon
@@ -31,7 +31,7 @@ export default function PortfolioPage() {
       value: portfolioData?.totalGain ? `$${portfolioData.totalGain.toLocaleString()}` : '$0',
       change: portfolioData?.totalGainPercent ? `+${portfolioData.totalGainPercent.toFixed(2)}%` : '+0%',
       changeType: 'positive' as const,
-      icon: TrendingUpIcon,
+      icon: ArrowTrendingUpIcon,
     },
     {
       title: 'Day Change',

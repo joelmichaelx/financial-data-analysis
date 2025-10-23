@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { 
   ChartBarIcon, 
   ShieldCheckIcon, 
-  TrendingUpIcon, 
+  ArrowTrendingUpIcon, 
   ExclamationTriangleIcon,
   CurrencyDollarIcon,
   ClockIcon,
@@ -23,13 +23,13 @@ import { useRiskAssessment } from '@/hooks/useRiskAssessment';
 
 export default function Dashboard() {
   const { data: financialData, isLoading: dataLoading } = useFinancialData();
-  const { riskMetrics, isLoading: riskLoading } = useRiskAssessment();
+  const { data: riskMetrics, isLoading: riskLoading } = useRiskAssessment();
   const [selectedTimeframe, setSelectedTimeframe] = useState('1D');
 
   const metrics = [
     {
       title: 'Total Portfolio Value',
-      value: financialData?.portfolioValue || '$0',
+      value: financialData?.portfolioValue ? `$${financialData.portfolioValue.toLocaleString()}` : '$0',
       change: '+12.5%',
       changeType: 'positive' as const,
       icon: CurrencyDollarIcon,
@@ -43,10 +43,10 @@ export default function Dashboard() {
     },
     {
       title: 'Daily P&L',
-      value: financialData?.dailyPnL || '$0',
+      value: financialData?.dailyPnL ? `$${financialData.dailyPnL.toLocaleString()}` : '$0',
       change: '+$2,450',
       changeType: 'positive' as const,
-      icon: TrendingUpIcon,
+      icon: ArrowTrendingUpIcon,
     },
     {
       title: 'Active Alerts',

@@ -42,6 +42,11 @@ export interface PortfolioData {
   totalGainPercent: number;
   dayChange: number;
   dayChangePercent: number;
+  performanceData: Array<{
+    date: string;
+    value: number;
+    benchmark?: number;
+  }>;
   holdings: Array<{
     symbol: string;
     name: string;
@@ -114,6 +119,7 @@ class FinancialDataService {
       totalGainPercent: 13.64,
       dayChange: 2450,
       dayChangePercent: 0.2,
+      performanceData: this.generateMockPerformanceData(),
       holdings: [
         {
           symbol: 'AAPL',

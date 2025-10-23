@@ -14,7 +14,7 @@ import { RiskAlerts } from '@/components/alerts/RiskAlerts';
 import { useRiskAssessment, useRiskHistory } from '@/hooks/useRiskAssessment';
 
 export default function RiskAnalysisPage() {
-  const { riskMetrics, isLoading } = useRiskAssessment();
+  const { data: riskMetrics, isLoading } = useRiskAssessment();
   const { data: riskHistory } = useRiskHistory('1M');
   const [selectedTimeframe, setSelectedTimeframe] = useState('1M');
 
