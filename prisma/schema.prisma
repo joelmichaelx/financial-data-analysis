@@ -100,6 +100,8 @@ model RiskAssessment {
   beta            Float
   correlation     Float
   createdAt       DateTime @default(now())
+  
+  riskBreakdowns  RiskBreakdown[]
 }
 
 model RiskBreakdown {
