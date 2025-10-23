@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  portfolios Portfolio[]
+  alerts     Alert[]
+  sessions   Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Portfolio {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  totalValue  Float    @default(0)
+  totalCost   Float    @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  holdings    Holding[]
+  performance PortfolioPerformance[]
+}
+
+model Holding {
+  id          String   @id @default(cuid())
+  portfolioId String
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  symbol      String
+  name        String
+  shares      Float
+  costBasis   Float
+  currentPrice Float
+  totalValue  Float
+  weight      Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PortfolioPerformance {
+  id          String   @id @default(cuid())
+  portfolioId String
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  date        DateTime
+  value       Float
+  benchmark   Float?
+  createdAt   DateTime @default(now())
+}
+
+model MarketData {
+  id          String   @id @default(cuid())
+  symbol    String
+  price     Float
+  change    Float
+  changePercent Float
+  volume    BigInt
+  high      Float
+  low       Float
+  open      Float
+  previousClose Float
+  timestamp DateTime @default(now())
+  createdAt DateTime @default(now())
+}
+
+model RiskAssessment {
+  id              String   @id @default(cuid())
+  portfolioId     String?
+  overallRisk     Float
+  riskScore       Float
+  riskLevel       String
+  var95           Float
+  var99           Float
+  expectedShortfall Float
+  maxDrawdown     Float
+  sharpeRatio     Float
+  beta            Float
+  correlation     Float
+  createdAt       DateTime @default(now())
+}
+
+model RiskBreakdown {
+  id              String   @id @default(cuid())
+  riskAssessmentId String
+  riskAssessment  RiskAssessment @relation(fields: [riskAssessmentId], references: [id], onDelete: Cascade)
+  category        String
+  value           Float
+  color           String
+  createdAt       DateTime @default(now())
+}
+
+model Alert {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // warning, error, info, success
+  title     String
+  message   String
+  severity  String   // low, medium, high, critical
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RiskHistory {
+  id          String   @id @default(cuid())
+  date        DateTime
+  riskScore   Float
+  var95       Float
+  var99       Float
+  sharpeRatio Float
+  createdAt   DateTime @default(now())
+}
+
+model ApiKey {
+  id        String   @id @default(cuid())
+  name      String
+  key       String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
